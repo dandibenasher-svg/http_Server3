@@ -53,7 +53,7 @@ while True:
             answer = "HTTP/1.1 200 OK\r\nContent-Length: 1\r\n\r\n5".encode()
         elif url.split("=")[0] == "calculate-next?num":
             num=url.split("=")[1]
-            if num.isDigit():
+            if num.isdigit():
                 num=int(num)
                 num=num+1
                 answer = f"HTTP/1.1 200 OK\r\nContent-Length: {len(str(num))}\r\n\r\n{str(num)}".encode()
