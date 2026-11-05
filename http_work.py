@@ -1,5 +1,6 @@
 import socket
 import os
+
 def get_url(answer):
     """
     returns url from client request
@@ -9,9 +10,17 @@ def get_url(answer):
     url = None
     lines1 = answer.split('\r\n')[0]
     params = lines1.split(' ')
-    if len(params) == 3 and params[0] == 'GET' and params[2] == 'HTTP/1.1':
+    if len(params) == 3 and (params[0] == 'GET' or params[0] == 'POST') and params[2] == 'HTTP/1.1':
         url = params[1][1:]
     return url
+
+def keep_image(image_name, image_data):
+    with open("image_keep", "a") as f:
+        f.write(image_name + "\n")
+    os.makedirs("image_folder", exist_ok=True)
+    with open(os.path.join("image_folder", image_name), "wb") as f:
+        f.write(image_data)
+
 
 def get_secret_msg(data):
     """
@@ -60,31 +69,71 @@ while True:
     print(f"{addr[0]} - connected")
     while True:
         try:
-            data = client_sock.recv(1024).decode()
+            data = client_sock.recv(1024)
+            if not data:
+                client_sock.close()
+                print("closed the connection")
+                break
+
+            while b"\r\n\r\n" not in data:
+                more_data = client_sock.recv(1024)
+                if not more_data:
+                    break
+                data += more_data
+            if b"\r\n\r\n" not in data:
+                client_sock.close()
+                break
+
+            image_name = data.split(b"\r\n\r\n", 1)[0]
+            image_data = data.split(b"\r\n\r\n", 1)[1]
+            content_length = 0
+            for line in image_name.decode().split("\r\n"):
+                if "Content-Length" in line:
+                    content_length = int(line.split(":")[1])
+
+            while len(image_data) < content_length:
+                more_data = client_sock.recv(min(1024, content_length - len(image_data)))
+                if not more_data:
+                    break
+                image_data += more_data
+
         except Exception as e:
             print(f"error in recv {str(e)}")
             client_sock.close()
             print("closed the connection")
             continue
 
-        file_name="secret_keep.txt"
-        url = get_url(data)
-        mode = test_get_post(data)
+
+        url = get_url(image_name.decode())
+        mode = test_get_post(image_name.decode())
         if mode == "post":
-            if "?secret" in data:
-                secret_message = get_secret_msg(data)
+            if "?secret" in url:
+                file_name = "secret_keep.txt"
+                secret_message = get_secret_msg(data.decode())
                 secret_message += "\n"
                 print(secret_message)
-                with open(file_name, "r") as f:
-                    secret_info = f.read()
-                with open(file_name, "w") as f:
-                    f.write(secret_info + secret_message)
-            elif "?image" in url:
-                pass
+                with open(file_name, "a") as f:
+                    f.write(secret_message)
+
+            elif "img_name=" in url:
+                image_file_name = url.split("img_name=")[1]
+                keep_image(image_file_name, image_data)
+                print(os.path.abspath(os.path.join("image_folder", image_file_name)))
+                print("Image saved")
+                continue
+
         elif mode == "get":
             if url is not None:
                 print("=============================================" + url +"========" + "/E:/other cyber work/move1.jpg")
-                if url == '':
+                if url.split("?")[0] == "image":
+                    image_file_name = url.split("img-name=")[1]
+                    image_path = os.path.join("image_folder", image_file_name)
+                    if os.path.exists(image_path):
+                        answer = open_files(image_path)
+                    else:
+                        answer = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n".encode()
+
+                elif url == '':
                     answer = open_files("index.html")
                 elif url =="calculate-next":
                     answer = "HTTP/1.1 200 OK\r\nContent-Length: 1\r\n\r\n5".encode()

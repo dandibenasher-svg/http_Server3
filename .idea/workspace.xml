@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0da86eb2-cf80-44d1-a330-15cdf8314e50" name="Changes" comment="commit7">
-      <change afterPath="$PROJECT_DIR$/client_http3.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/old_work3.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/secret_keep.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/image_keep" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client_http3.py" beforeDir="false" afterPath="$PROJECT_DIR$/client_http3.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/http_work.py" beforeDir="false" afterPath="$PROJECT_DIR$/http_work.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/secret_keep.txt" beforeDir="false" afterPath="$PROJECT_DIR$/secret_keep.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +35,7 @@
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
     "url": "https://github.com/dandibenasher-svg/http_Server3.git",
-    "accountId": "491a68c5-a186-492d-9669-6842d51cd0e6"
+    "accountId": "fcfbcb87-36e3-4c01-be59-e06d233a0ced"
   }
 }]]></component>
   <component name="ProjectColorInfo">{
